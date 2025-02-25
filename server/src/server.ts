@@ -21,8 +21,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Implement middleware to connect the routes
-// This line of code mounts our methods defined in htmlRoutes.ts to our server
-app.use("/api", routes);
+// routes/index.ts and routes/api/index.ts define how our routes are mounted to the server
+// Routes in routes/htmlRoutes.ts are mounted to /api.
+// Routes in routes/api/weatherRoutes.ts are mounted to /api/weather.
+app.use(routes);
 
 // This needs to get moved into htmlRoutes.ts...
 app.post('/api/weather/', async (req, res) => {
