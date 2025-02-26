@@ -19,12 +19,12 @@ router.post('/', async (req, res) => {
   if (arr) {
     res.json(arr);
 
-    // TODO: save city to search history
+    // save city to search history
     HistoryService.addCity(cityName);
   }
 });
 
-// TODO: GET search history
+//GET search history
 router.get('/history', async (_req, res) => {
   console.log(`GETTING SEARCH HISTORY`);
   const response = await HistoryService.getCities();
@@ -32,7 +32,7 @@ router.get('/history', async (_req, res) => {
   res.json(response);
 });
 
-// * BONUS TODO: DELETE city from search history
+// DELETE city from search history
 router.delete('/history/:id', async (req, res) => {
   const { id } = req.params;  // Extract the 'id' from the URL params
   await HistoryService.removeCity(id);  // Pass the id to the service function
