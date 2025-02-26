@@ -24,7 +24,7 @@ class WeatherService {
   // Variables for queries
   geocodeQuery!: string;
   locationData!: any;
-  cityCoords!: Coordinates;
+  cityCoords!: Coordinates | undefined;
   weatherQuery!: string;
   weatherData!: any[];
 
@@ -50,22 +50,25 @@ class WeatherService {
     // It's just a simple fetch, we don't need to do much here...
     const respJSON = await (await fetch(geocodeQuery)).json() as any[];
     const locationData = respJSON[0];
-    // console.log(`locationData updated: ${locationData}`);
+    console.log(`locationData updated: ${locationData}`);
 
     return locationData;
   }
 
   // Create destructureLocationData method
-  private destructureLocationData(locationData: any): Coordinates {
+  private destructureLocationData(locationData: any): Coordinates | undefined {
 
-    const cityCoords: Coordinates = {
-      lat: locationData.lat,
-      lon: locationData.lon
+    if (locationData !== undefined) {
+      const cityCoords: Coordinates = {
+        lat: locationData.lat,
+        lon: locationData.lon
+      }
+
+      return cityCoords;
+    } else {
+      return undefined;
     }
-
     // console.log(`cityCoords updated: (${cityCoords.lat}, ${cityCoords.lon})`);
-
-    return cityCoords;
   }
 
   // TODO: Create fetchAndDestructureLocationData method
@@ -78,7 +81,7 @@ class WeatherService {
   private async buildWeatherQuery(coords: Coordinates) {
     if (coords === undefined) {
       await this.fetchAndDestructureLocationData(this.geocodeQuery);
-      coords = this.cityCoords;
+      coords = this.cityCoords as Coordinates;
     }
     // Use a set of coordinates to construct a string we can use for making calls to the owm API
     this.weatherQuery = this.apiUrl + `/data/2.5/forecast?lat=${coords.lat}&lon=${coords.lon}&appid=${this.apiKey}`;
@@ -138,17 +141,21 @@ class WeatherService {
     // Next, with our query, fetch and destructure location data, which we need to build a weather query
     this.cityCoords = await this.fetchAndDestructureLocationData(this.geocodeQuery);
 
-    // Next, build our weather query
-    this.buildWeatherQuery(this.cityCoords);
+    if (this.cityCoords) {
+      // Next, build our weather query
+      this.buildWeatherQuery(this.cityCoords);
 
-    // Next, fetch weather data with our weather query 
-    this.weatherData = await this.fetchWeatherData(this.weatherQuery);
+      // Next, fetch weather data with our weather query 
+      this.weatherData = await this.fetchWeatherData(this.weatherQuery);
 
-    // Next, we need to parse the response we get from the weather data
-    return this.parseCurrentWeather(this.weatherData);
+      // Next, we need to parse the response we get from the weather data
+      return this.parseCurrentWeather(this.weatherData);
 
-    // Finally, we build a forecast array with the parsed data
-    // this.buildForecastArray(this.parseData);
+      // Finally, we build a forecast array with the parsed data
+      // this.buildForecastArray(this.parseData);
+    } else {
+      return undefined;
+    }
   }
 }
 

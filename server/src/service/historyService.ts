@@ -1,5 +1,5 @@
-import { readFile, writeFile } from "fs";
-
+import { writeFile } from "fs";
+import { promises as fs } from "fs";
 // I need this to know what __dirname is
 import { fileURLToPath } from 'url';
 import path from 'path';
@@ -23,7 +23,7 @@ class HistoryService {
   private async read(): Promise<any> {
     // Reads the .json and returns a basic parsed response.
     try {
-      const data = await fs.readFile('output.json', 'utf8');
+      const data = await fs.readFile(this.targetFile, 'utf8');
       return JSON.parse(data);
     } catch (err) {
         console.error('Error reading or parsing JSON:', err);
@@ -46,7 +46,7 @@ class HistoryService {
   // TODO: Define a getCities method that reads the cities from the searchHistory.json file and returns them as an array of City objects
   async getCities(): Promise<City[]> {
     // To begin, we need to read the searchHistory file
-    const response = await this.read() | []; 
+    const response = await this.read(); 
 
     // For now, we don't fully understand what the response actually is, so let's try this...
     console.log(response);
@@ -79,7 +79,20 @@ class HistoryService {
   }
 
   // * BONUS TODO: Define a removeCity method that removes a city from the searchHistory.json file
-  // async removeCity(id: string) {}
+  async removeCity(id: string) {
+    this.cities = await this.getCities();
+    
+    let target = -1;
+    for (let i=0; i< this.cities.length; i++) {
+      if (String(this.cities[i].id) === id) {
+        console.log('Found target!');
+        target = i;
+      };
+    }
+
+    this.cities.splice(target);
+    this.write(this.cities);
+  }
 }
 
 export default new HistoryService();

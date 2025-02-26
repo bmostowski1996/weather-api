@@ -15,11 +15,13 @@ router.post('/', async (req, res) => {
   const ws = new WeatherService(cityName);
 
   const arr = await ws.getWeatherForCity();
-  console.log(`RETURNING ARRAY: ${arr}`);
-  res.json(arr);
+  
+  if (arr) {
+    res.json(arr);
 
-  // TODO: save city to search history
-  HistoryService.addCity(cityName);
+    // TODO: save city to search history
+    HistoryService.addCity(cityName);
+  }
 });
 
 // TODO: GET search history
@@ -31,6 +33,10 @@ router.get('/history', async (_req, res) => {
 });
 
 // * BONUS TODO: DELETE city from search history
-router.delete('/history/:id', async (_req, _res) => {});
+router.delete('/history/:id', async (req, res) => {
+  const { id } = req.params;  // Extract the 'id' from the URL params
+  await HistoryService.removeCity(id);  // Pass the id to the service function
+  res.status(200).send('City removed');
+});
 
 export default router;
