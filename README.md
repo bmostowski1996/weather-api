@@ -17,5 +17,6 @@ The code uses two classes `WeatherService` and `HistoryService` to serve essenti
 ## Deployed Website
 
 The website is deployed [here](https://weather-api-l614.onrender.com/).
+
 ![image](https://github.com/user-attachments/assets/cca5053e-31c2-45f7-a96a-0b380d1bd96b)
 
