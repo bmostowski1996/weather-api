@@ -68,14 +68,24 @@ class HistoryService {
       this.cities = [];
     }
 
-    this.cities.push({
-      name: city,
-      id: this.id
-    });
-    this.id++;
-    console.log(`Updated cities array: ${this.cities}`);
-    // Next, let's write our cities array to the .json;
-    this.write(this.cities);
+    // Check that the city isn't already in our list of cities...
+    let alreadyThere = false;
+    for (let i = 0; i < this.cities.length; i++) {
+      if (this.cities[i].name === city) {
+        alreadyThere = true;
+      }
+    }
+
+    if (!alreadyThere) {
+      this.cities.push({
+        name: city,
+        id: this.id
+      });
+      this.id++;
+      console.log(`Updated cities array: ${this.cities}`);
+      // Next, let's write our cities array to the .json;
+      this.write(this.cities);
+    }
   }
 
   // * BONUS TODO: Define a removeCity method that removes a city from the searchHistory.json file
