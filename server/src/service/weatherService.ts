@@ -36,7 +36,7 @@ class WeatherService {
   private buildGeocodeQuery(cityName: string) {
     // Use this.cityName to build a query that allows us to get that city's coordinates.
     this.geocodeQuery = this.apiUrl + `/geo/1.0/direct?q=${cityName}&limit=1&appid=${this.apiKey}`;
-    // console.log(`geocodeQuery updated: ${this.geocodeQuery}`);
+    console.log(`geocodeQuery updated: ${this.geocodeQuery}`);
   }
 
   // Create fetchLocationData method
@@ -141,7 +141,7 @@ class WeatherService {
     // Next, with our query, fetch and destructure location data, which we need to build a weather query
     this.cityCoords = await this.fetchAndDestructureLocationData(this.geocodeQuery);
 
-    if (this.cityCoords) {
+    if (this.cityCoords !== undefined) {
       // Next, build our weather query
       this.buildWeatherQuery(this.cityCoords);
 
